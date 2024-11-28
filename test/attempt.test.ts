@@ -77,4 +77,56 @@ describe('Basic test setup', () => {
     expect(!result.ok && result.error).toBeInstanceOf(Error)
     expect(!result.ok && result.error.message).toBe('rejected with string')
   })
+
+  it('should handle successful async operations with various types', async () => {
+    const numberResult = await attempt(async () => 42)
+    expect(numberResult.ok).toBe(true)
+    expect(numberResult.ok && numberResult.value).toBe(42)
+
+    const objectResult = await attempt(async () => ({ key: 'value' }))
+    expect(objectResult.ok).toBe(true)
+    expect(objectResult.ok && objectResult.value).toEqual({ key: 'value' })
+
+    const arrayResult = await attempt(async () => [1, 2, 3])
+    expect(arrayResult.ok).toBe(true)
+    expect(arrayResult.ok && arrayResult.value).toEqual([1, 2, 3])
+  })
+
+  it('should handle nested async operations', async () => {
+    const result = await attempt(async () => {
+      const inner = await attempt(async () => 'nested value')
+      if (!inner.ok) throw inner.error
+      return inner.value.toUpperCase() /// TODO: Typechecker
+    })
+
+    expect(result.ok).toBe(true)
+    expect(result.ok && result.value).toBe('NESTED VALUE')
+  })
+
+  it('should handle async operations that timeout', async () => {
+    const result = await attempt(async () => {
+      await new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Operation timed out')), 10)
+      })
+      return 'should not reach here'
+    })
+
+    expect(result.ok).toBe(false)
+    expect(!result.ok && result.error).toBeInstanceOf(Error)
+    expect(!result.ok && result.error.message).toBe('Operation timed out')
+  })
+
+  it('should handle sync operations with complex calculations', () => {
+    const result = attempt(() => {
+      const numbers = Array.from({ length: 1000 }, (_, i) => i)
+      return numbers.reduce((sum, num) => {
+        if (num === 500) throw new Error('Calculation error')
+        return sum + num
+      }, 0)
+    })
+
+    expect(result.ok).toBe(false)
+    expect(!result.ok && result.error).toBeInstanceOf(Error)
+    expect(!result.ok && result.error.message).toBe('Calculation error')
+  })
 })
