@@ -1,9 +1,10 @@
 {
-  "name": "result-type",
+  "name": "attempt",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -11,6 +12,7 @@
   "description": "",
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "prettier": "^3.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.6"
