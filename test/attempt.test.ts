@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { attempt } from '../src/attempt'
+import { attempt, Either } from '../src/attempt'
 
 describe('Basic test setup', () => {
   it('should handle successful async operation', async () => {
@@ -153,5 +153,35 @@ describe('Basic test setup', () => {
 
     expect(result.ok).toBe(true)
     expect(result.ok && result.value).toBe('DEEP VALUEDEEP VALUE!')
+  })
+
+  it('should handle Either type with discriminated unions for simple validation in sync operations', () => {
+    type ValidationError =
+      | { type: 'EmptyInput'; message: string }
+      | { type: 'InvalidCharacter'; message: string }
+
+    const validateInput = (input: string): Either<string, ValidationError> => {
+      if (input === '') {
+        return { ok: false, error: { type: 'EmptyInput', message: 'Input is empty' } }
+      }
+      if (!/^[a-zA-Z]+$/.test(input)) {
+        return { ok: false, error: { type: 'InvalidCharacter', message: 'Input contains invalid characters' } }
+      }
+      return { ok: true, value: 'Valid input' }
+    }
+
+    const result1 = validateInput('')
+    expect(result1.ok).toBe(false)
+    expect(!result1.ok && result1.error.type).toBe('EmptyInput')
+    expect(!result1.ok && result1.error.message).toBe('Input is empty')
+
+    const result2 = validateInput('abc123')
+    expect(result2.ok).toBe(false)
+    expect(!result2.ok && result2.error.type).toBe('InvalidCharacter')
+    expect(!result2.ok && result2.error.message).toBe('Input contains invalid characters')
+
+    const result3 = validateInput('valid')
+    expect(result3.ok).toBe(true)
+    expect(result3.ok && result3.value).toBe('Valid input')
   })
 })

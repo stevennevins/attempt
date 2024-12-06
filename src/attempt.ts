@@ -3,18 +3,20 @@ type Success<T> = {
     value: T
   }
 
-  type Failure = {
+  type Failure<Error> = {
     ok: false
     error: Error
   }
 
-  export type Result<T> = Success<T> | Failure
+  export type Result<T> = Success<T> | Failure<Error>
+
+  export type Either<L, R> = Success<L> | Failure<R>
 
   export function ok<T>(value: T): Success<T> {
     return { ok: true, value }
   }
 
-  export function fail(e: unknown): Failure {
+  export function fail<E>(e: E): Failure<Error> {
     return { ok: false, error: e instanceof Error ? e : new Error(String(e)) }
   }
 
