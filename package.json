@@ -1,20 +1,37 @@
 {
   "name": "attempt",
   "version": "1.0.0",
-  "type": "module",
-  "main": "index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/index.js",
+    "dist/index.d.ts",
+    "dist/index.js.map",
+    "dist/index.d.ts.map"
+  ],
   "scripts": {
     "pretest": "npm run typecheck",
     "test": "vitest",
+    "build": "rm -rf dist && tsc",
+    "prepublishOnly": "npm run build",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "tag": "release-it --no-npm.publish --no-github",
+    "tag:dry": "release-it --no-npm.publish --no-github --dry-run",
+    "release": "release-it --ci --no-increment --verbose",
+    "release:dry": "release-it --ci --no-increment --verbose --dry-run"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "release-it": "^17.10.0",
     "prettier": "^3.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
