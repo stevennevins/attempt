@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { attempt, Either } from '../src/attempt'
+import { attempt } from '../src/attempt'
+import { Either } from '../src/types'
 
 describe('Basic test setup', () => {
   it('should handle successful async operation', async () => {
