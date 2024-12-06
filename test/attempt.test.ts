@@ -162,11 +162,29 @@ describe('Basic test setup', () => {
 
     const validateInput = (input: string): Either<string, ValidationError> => {
       if (input === '') {
-        return { ok: false, error: { type: 'EmptyInput', message: 'Input is empty' } }
+        return {
+          ok: false,
+          error: { type: 'EmptyInput', message: 'Input is empty' },
+        }
       }
       if (!/^[a-zA-Z]+$/.test(input)) {
-        return { ok: false, error: { type: 'InvalidCharacter', message: 'Input contains invalid characters' } }
+        return {
+          ok: false,
+          error: {
+            type: 'InvalidCharacter',
+            message: 'Input contains invalid characters',
+          },
+        }
       }
+      //   if ('test' === input) {
+      //     return {
+      //       ok: false,
+      //       error: {
+      //         type: 'InvalidErrorType',
+      //         message: 'Should have type error',
+      //       },
+      //     }
+      //   }
       return { ok: true, value: 'Valid input' }
     }
 
