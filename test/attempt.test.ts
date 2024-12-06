@@ -202,4 +202,47 @@ describe('Basic test setup', () => {
     expect(result3.ok).toBe(true)
     expect(result3.ok && result3.value).toBe('Valid input')
   })
+
+  it('should handle Either type with success case', () => {
+    const successResult: Either<string, Error> = {
+      ok: true,
+      value: 'success value',
+    }
+
+    expect(successResult.ok).toBe(true)
+    expect(successResult.ok && successResult.value).toBe('success value')
+  })
+
+  it('should handle Either type with failure case', () => {
+    const errorMessage = 'test error'
+    const failureResult: Either<string, Error> = {
+      ok: false,
+      error: new Error(errorMessage),
+    }
+
+    expect(failureResult.ok).toBe(false)
+    expect(!failureResult.ok && failureResult.error.message).toBe(errorMessage)
+  })
+
+  it('should handle Either type with different success and error types', () => {
+    type SuccessType = { data: number }
+    type ErrorType = { code: string; message: string }
+
+    const successCase: Either<SuccessType, ErrorType> = {
+      ok: true,
+      value: { data: 42 },
+    }
+
+    const failureCase: Either<SuccessType, ErrorType> = {
+      ok: false,
+      error: { code: 'ERR_001', message: 'Custom error' },
+    }
+
+    expect(successCase.ok).toBe(true)
+    expect(successCase.ok && successCase.value.data).toBe(42)
+
+    expect(failureCase.ok).toBe(false)
+    expect(!failureCase.ok && failureCase.error.code).toBe('ERR_001')
+    expect(!failureCase.ok && failureCase.error.message).toBe('Custom error')
+  })
 })
