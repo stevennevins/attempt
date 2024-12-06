@@ -129,4 +129,29 @@ describe('Basic test setup', () => {
     expect(!result.ok && result.error).toBeInstanceOf(Error)
     expect(!result.ok && result.error.message).toBe('Calculation error')
   })
+
+  it('should handle deeply nested async operations', async () => {
+    const result = await attempt(async () => {
+      const firstLevel = await attempt(async () => {
+        const secondLevel = await attempt(async () => {
+          const thirdLevel = await attempt(async () => 'deep value')
+          if (!thirdLevel.ok) {
+            throw thirdLevel.error
+          }
+          return thirdLevel.value.repeat(2)
+        })
+        if (!secondLevel.ok) {
+          throw secondLevel.error
+        }
+        return secondLevel.value.toUpperCase()
+      })
+      if (!firstLevel.ok) {
+        throw firstLevel.error
+      }
+      return `${firstLevel.value}!`
+    })
+
+    expect(result.ok).toBe(true)
+    expect(result.ok && result.value).toBe('DEEP VALUEDEEP VALUE!')
+  })
 })
