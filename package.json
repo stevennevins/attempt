@@ -1,6 +1,7 @@
 {
   "name": "attempt",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "pretest": "npm run typecheck",
