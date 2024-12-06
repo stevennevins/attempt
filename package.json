@@ -12,10 +12,7 @@
     }
   },
   "files": [
-    "dist/index.js",
-    "dist/index.d.ts",
-    "dist/index.js.map",
-    "dist/index.d.ts.map"
+    "dist/**/*"
   ],
   "scripts": {
     "pretest": "npm run typecheck",
