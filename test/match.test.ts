@@ -8,7 +8,7 @@ describe('match function', () => {
 
     const greeting = match(parseResult, {
       ok: (data) => `Hello, ${data.name}!`,
-      error: (err) => `Failed to parse: ${err.message}`
+      error: (err) => `Failed to parse: ${err.message}`,
     })
 
     expect(greeting).toBe('Hello, Alice!')
@@ -19,7 +19,7 @@ describe('match function', () => {
 
     const greeting = match(parseResult, {
       ok: (data) => `Hello, ${data.name}!`,
-      error: (err) => `Failed to parse: ${err.message}`
+      error: (err) => `Failed to parse: ${err.message}`,
     })
 
     expect(greeting).toMatch(/Failed to parse:/)
@@ -29,8 +29,8 @@ describe('match function', () => {
     const positiveResult = attempt(() => parseInt('42'))
 
     const positiveDisplay = match(positiveResult, {
-      ok: (num) => num > 0 ? 'Positive' : 'Zero or negative',
-      error: () => 'Invalid number'
+      ok: (num) => (num > 0 ? 'Positive' : 'Zero or negative'),
+      error: () => 'Invalid number',
     })
 
     expect(positiveDisplay).toBe('Positive')
@@ -38,8 +38,8 @@ describe('match function', () => {
     const invalidResult = attempt(() => parseInt('not a number'))
 
     const invalidDisplay = match(invalidResult, {
-      ok: (num) => num > 0 ? 'Positive' : 'Zero or negative',
-      error: () => 'Invalid number'
+      ok: (num) => (num > 0 ? 'Positive' : 'Zero or negative'),
+      error: () => 'Invalid number',
     })
 
     expect(invalidDisplay).toBe('Zero or negative') // NaN is coerced to 0
@@ -51,17 +51,17 @@ describe('match function', () => {
     const logMessage = match(successResult, {
       ok: (value) => ({
         level: 'info',
-        message: `Operation succeeded with value: ${value.value}`
+        message: `Operation succeeded with value: ${value.value}`,
       }),
       error: (err) => ({
         level: 'error',
-        message: `Operation failed: ${err.message}`
-      })
+        message: `Operation failed: ${err.message}`,
+      }),
     })
 
     expect(logMessage).toEqual({
       level: 'info',
-      message: 'Operation succeeded with value: 42'
+      message: 'Operation succeeded with value: 42',
     })
   })
 
@@ -73,17 +73,17 @@ describe('match function', () => {
     const logMessage = match(failureResult, {
       ok: (value) => ({
         level: 'info',
-        message: `Operation succeeded with value: ${value}`
+        message: `Operation succeeded with value: ${value}`,
       }),
       error: (err) => ({
         level: 'error',
-        message: `Operation failed: ${err.message}`
-      })
+        message: `Operation failed: ${err.message}`,
+      }),
     })
 
     expect(logMessage).toEqual({
       level: 'error',
-      message: 'Operation failed: Something went wrong'
+      message: 'Operation failed: Something went wrong',
     })
   })
 })
