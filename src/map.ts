@@ -13,14 +13,15 @@ import { Result } from './types'
  * const strResult = map(numResult, num => num.toString()) // Result<string>
  */
 export function map<T, U>(result: Result<T>, fn: (value: T) => U): Result<U> {
-  if (result.ok) {
-    return { ok: true, value: fn(result.value) }
-  }
-  return result
+    if (result.ok) {
+        return { ok: true, value: fn(result.value) }
+    }
+    return result
 }
 
 /**
  * Transforms the error inside a failed Result using the provided function
+ * @template T The type of the Result value
  * @template E The type of the input error, must extend Error
  * @template F The type of the transformed error, must extend Error
  * @param result The Result containing the error to transform
@@ -32,13 +33,24 @@ export function map<T, U>(result: Result<T>, fn: (value: T) => U): Result<U> {
  * const result = mapError(failedResult,
  *   err => new Error(`Operation failed: ${err.message}`)
  * )
+ *
+ * // Transform a custom error type
+ * class CustomError extends Error {
+ *   constructor(public code: number, message: string) {
+ *     super(message)
+ *   }
+ * }
+ * const customError = attempt(() => { throw new CustomError(500, 'Server error') })
+ * const result = mapError(customError,
+ *   (err: CustomError) => new Error(`${err.code}: ${err.message}`)
+ * )
  */
-export function mapError<E extends Error, F extends Error>(
-  result: Result<any>,
-  fn: (error: E) => F
-): Result<any> {
-  if (result.ok) {
-    return result
-  }
-  return { ok: false, error: fn(result.error as E) }
+export function mapError<T, E extends Error, F extends Error>(
+    result: Result<T>,
+    fn: (error: E) => F
+): Result<T> {
+    if (result.ok) {
+        return result
+    }
+    return { ok: false, error: fn(result.error as E) }
 }
